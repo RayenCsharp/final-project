@@ -3,23 +3,35 @@ using UnityEngine;
 
 public class DetectionZone : MonoBehaviour
 {
-    private Collider col;
+    [Tooltip("Only colliders on these layers will be detected.")]
+    [SerializeField] private LayerMask detectionLayer; // Allows configuration in the Inspector
 
     public List<Collider> detectedColliders = new List<Collider>();
+
+    private Collider col; // Reference to the Collider component
 
     private void Awake()
     {
         col = GetComponent<Collider>();
     }
 
-    void OnTriggerEnter(Collider collision)
+    private void OnTriggerEnter(Collider other)
     {
-        detectedColliders.Add(collision);
+        // Only detect colliders on the specified layer(s)
+        if (((1 << other.gameObject.layer) & detectionLayer) != 0)
+        {
+            if (!detectedColliders.Contains(other))
+            {
+                detectedColliders.Add(other);
+            }
+        }
     }
 
-    void OnTriggerExit(Collider collision)
+    private void OnTriggerExit(Collider other)
     {
-
-        detectedColliders.Remove(collision);
+        if (detectedColliders.Contains(other))
+        {
+            detectedColliders.Remove(other);
+        }
     }
 }

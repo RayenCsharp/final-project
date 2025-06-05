@@ -4,6 +4,7 @@ public class Enemy : MonoBehaviour
 {
     private enum State
     {
+        idle, // Enemy is idle
         Roaming, // Enemy is roaming
         Chasing, // Enemy is chasing the player
         attacking // Enemy is attacking the player
@@ -11,7 +12,8 @@ public class Enemy : MonoBehaviour
     [SerializeField]private State currentState; // Current state of the enemy
 
 
-    [SerializeField] private float speed = 5f; // Speed of the enemy
+    [SerializeField] private float walkingSpeed = 2.5f; 
+    [SerializeField] private float runningSpeed = 4.5f; 
     private Rigidbody rb; // Rigidbody component of the enemy
 
     private Vector3 startingPosition; // Starting position of the enemy
@@ -21,11 +23,19 @@ public class Enemy : MonoBehaviour
     private float roamingRange = 10f; // Range within which the enemy can roam
     private float waitTime;
     private float waitTimer; // Timer to track roaming time
-    private bool enemystoped; // Flag to check if the enemy is roaming
+    [SerializeField]private bool enemystoped; // Flag to check if the enemy is roaming
+    private bool isAttacking = false;
 
     public DetectionZone obstacleDetectionZone; // Reference to the detection zone for obstacles
     public DetectionZone targetingZone; // Reference to the detection zone for targeting
     public DetectionZone attackDetectionZone; // Reference to the detection zone for attack detection
+
+    private Animator Animator;
+    private AudioSource AudioSource;
+
+    [SerializeField]private AudioClip walkingSound;
+    [SerializeField]private AudioClip runningSound;
+    [SerializeField]private AudioClip swordSwingSound;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,6 +43,8 @@ public class Enemy : MonoBehaviour
     {
         currentState = State.Roaming; // Set the initial state to Roaming
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component
+        Animator = GetComponent<Animator>();
+        AudioSource = GetComponent<AudioSource>();
         startingPosition = transform.position; // Set the starting position to the enemy's current position
         SetNewRoamingPosition(); // Set the initial roaming position
     }
@@ -40,61 +52,84 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (attackDetectionZone.detectedColliders.Count > 0)
-        {
-            currentState = State.attacking;
-        }
-        else if (targetingZone.detectedColliders.Count > 0)
-        {
-            currentState = State.Chasing;
-        }
-        else
-        {
-            currentState = State.Roaming;
-        }
+        DetermineState();
+        HandlingSounds();
+
+        Animator.SetBool("isMoving", currentState == State.Chasing || currentState == State.Roaming);
+        Animator.SetBool("isChasing", currentState == State.Chasing);
+        Animator.SetBool("isAttacking", currentState == State.attacking);
 
         switch (currentState)
         {
             case State.Roaming:
+                
                 if (Vector3.Distance(transform.position, roamingPostion) < 0.1f)
                 {
-                    float newWaitTime = 1f; // Generate a random wait time between 1 and 3 seconds
-                    ManageRoamingState(newWaitTime); // Manage the roaming state when the enemy reaches the roaming position
+                    if (!enemystoped)
+                        StartWaiting(1f); // Reached destination
                 }
-                else if (obstacleDetectionZone.detectedColliders.Count > 0) // Check if there are any detected colliders in the detection zone
+                else if (obstacleDetectionZone.detectedColliders.Count > 0)
                 {
-                    float newWaitTime = 0.1f; // Generate a random wait time between 1 and 3 seconds
-                    ManageRoamingState(newWaitTime); // Manage the roaming state when an obstacle is detected
+                    if (!enemystoped)
+                        SetNewRoamingPosition();
                 }
                 break;
-            case State.Chasing:
-                Vector3 target = targetingZone.detectedColliders[0].transform.position; // Get the position of the first detected collider in the targeting zone
-                chasingPostion = (target - transform.position).normalized; // Calculate the direction towards the target
+
+            case State.idle:
+                waitTimer += Time.deltaTime;
+                if (waitTimer >= waitTime)
+                {
+                    enemystoped = false;
+                    waitTimer = 0f;
+                    SetNewRoamingPosition();
+                }
                 break;
+
+            case State.Chasing:
+                if (targetingZone.detectedColliders.Count > 0)
+                {
+                    Transform target = targetingZone.detectedColliders[0].transform;
+                    chasingPostion = (target.position - transform.position).normalized;
+                }
+                break;
+
             case State.attacking:
-                Debug.Log("Enemy is attacking!"); // Log a message when the enemy is in the attacking state
+                if (!isAttacking)
+                {
+                    isAttacking = true;
+                    Invoke(nameof(EndAttack), 2.25f); // duration of attack animation
+                }
                 break;
         }
 
     }
 
+    void EndAttack()
+    {
+        isAttacking = false;
+    }
+
     void FixedUpdate()
     {
+        if (enemystoped) return;
         if (!enemystoped && currentState == State.Roaming) // Check if the enemy is not stopped
         {
             Vector3 direction = (roamingPostion - transform.position).normalized; // Calculate the direction towards the roaming position
-            rb.MovePosition(transform.position + direction * speed * Time.fixedDeltaTime); // Move the enemy towards the roaming position
+            rb.MovePosition(transform.position + direction * walkingSpeed * Time.fixedDeltaTime); // Move the enemy towards the roaming position
             if (direction != Vector3.zero) // Check if the direction is not zero to avoid unnecessary rotation
             {
                 Quaternion lookRotation = Quaternion.LookRotation(direction); // Calculate the rotation towards the direction
-                rb.MoveRotation(Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * speed)); // Smoothly rotate the enemy towards the direction
+                rb.MoveRotation(Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * walkingSpeed)); // Smoothly rotate the enemy towards the direction
             }
         }
         else if (currentState == State.Chasing) // Check if the enemy is in the Chasing state and there are detected colliders in the targeting zone
         {
-            rb.MovePosition(transform.position + chasingPostion * speed * Time.fixedDeltaTime); // Move the enemy towards the target
-            Quaternion lookRotation = Quaternion.LookRotation(chasingPostion); // Calculate the rotation towards the direction
-            rb.MoveRotation(Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * speed)); // Smoothly rotate the enemy towards the direction
+            rb.MovePosition(transform.position + chasingPostion * runningSpeed * Time.fixedDeltaTime); // Move the enemy towards the target
+            if (chasingPostion.sqrMagnitude > 0.001f)
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(chasingPostion);
+                rb.MoveRotation(Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * runningSpeed));
+            }
 
         }
     }
@@ -105,16 +140,88 @@ public class Enemy : MonoBehaviour
         roamingPostion = startingPosition + randomDirection * Random.Range(0f, roamingRange); // Set the new roaming position based on the random direction and range
     }
 
-    void ManageRoamingState(float newWaitTime)
+    void StartWaiting(float newWaitTime)
     {
-        enemystoped = true; // Set the enemy to stopped state if an obstacle is detected
-        waitTimer += Time.deltaTime; // Increment the wait timer
-        waitTime = newWaitTime; // Set a short wait time when an obstacle is detected
-        if (waitTimer >= waitTime)
+        currentState = State.idle;
+        enemystoped = true;
+        waitTime = newWaitTime;
+        waitTimer = 0f;
+    }
+
+    private void DetermineState()
+    {
+        if (isAttacking)
         {
-            enemystoped = false; // Reset the stopped state after waiting
-            waitTimer = 0f;
-            SetNewRoamingPosition(); // Set a new roaming position when an obstacle is detected
+            currentState = State.attacking;
+        }
+        else if (attackDetectionZone.detectedColliders.Count > 0)
+        {
+            currentState = State.attacking;
+        }
+        else if (targetingZone.detectedColliders.Count > 0)
+        {
+            currentState = State.Chasing;
+        }
+        else if (!enemystoped)
+        {
+            currentState = State.Roaming;
+        }
+        else
+        {
+            currentState = State.idle;
         }
     }
+
+    void HandlingSounds()
+    {
+        switch (currentState)
+        {
+            case State.Roaming:
+                if (!AudioSource.isPlaying || AudioSource.clip != walkingSound)
+                {
+                    AudioSource.clip = walkingSound;
+                    AudioSource.loop = true;
+                    AudioSource.Play();
+                }
+                break;
+            case State.Chasing:
+                if (!AudioSource.isPlaying || AudioSource.clip != runningSound)
+                {
+                    AudioSource.clip = runningSound;
+                    AudioSource.loop = true;
+                    AudioSource.Play();
+                }
+                break;
+            case State.attacking:
+                if (!AudioSource.isPlaying || AudioSource.clip != swordSwingSound)
+                {
+                    AudioSource.clip = swordSwingSound;
+                    AudioSource.loop = false;
+                    AudioSource.Play();
+                }
+                break;
+            default:
+                if (AudioSource.isPlaying)
+                {
+                    AudioSource.Stop();
+                    AudioSource.clip = null;
+                } 
+                break;
+        }
+    }
+
+    
+
+    public void FreezeMovement()
+    {
+        enemystoped = true;
+        currentState = State.idle; // Set the state to idle when frozen
+        rb.linearVelocity = Vector3.zero;
+    }
+
+    public void UnfreezeMovement()
+    {
+        enemystoped = false;
+    }
+
 }

@@ -180,6 +180,7 @@ public class Enemy : MonoBehaviour
                 if (!AudioSource.isPlaying || AudioSource.clip != walkingSound)
                 {
                     AudioSource.clip = walkingSound;
+                    AudioSource.volume = 0.5f;
                     AudioSource.loop = true;
                     AudioSource.Play();
                 }
@@ -188,6 +189,7 @@ public class Enemy : MonoBehaviour
                 if (!AudioSource.isPlaying || AudioSource.clip != runningSound)
                 {
                     AudioSource.clip = runningSound;
+                    AudioSource.volume = 0.3f;
                     AudioSource.loop = true;
                     AudioSource.Play();
                 }
@@ -217,11 +219,14 @@ public class Enemy : MonoBehaviour
         enemystoped = true;
         currentState = State.idle; // Set the state to idle when frozen
         rb.linearVelocity = Vector3.zero;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     public void UnfreezeMovement()
     {
         enemystoped = false;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; // Freeze position on X and Y axes and rotation on Z axis
+
     }
 
 }

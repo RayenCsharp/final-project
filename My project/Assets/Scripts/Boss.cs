@@ -38,6 +38,11 @@ public class Boss : MonoBehaviour
     
     [SerializeField]private AudioClip walkingSound;
     [SerializeField]private AudioClip runningSound;
+
+    [SerializeField] private AudioClip attackSound1;
+    [SerializeField] private AudioClip attackSound2;
+    [SerializeField] private AudioClip attackSound3;
+
     /*
     [SerializeField]private AudioClip attackSound;
     [SerializeField]private AudioClip chargeAttackSound;
@@ -62,6 +67,7 @@ public class Boss : MonoBehaviour
 
         Animator.SetBool("isMoving", currentState == State.Chasing || currentState == State.Roaming);
         Animator.SetBool("isChasing", currentState == State.Chasing);
+        Animator.SetBool("isAttacking", currentState == State.normalAttack);
 
         switch (currentState)
         {
@@ -102,9 +108,8 @@ public class Boss : MonoBehaviour
                 if (!isAttacking)
                 {
                     isAttacking = true;
-                    Invoke(nameof(EndAttack), 2.25f); // duration of attack animation
-                    Debug.Log("Boss is Attacking!"); // Log the attack action
-                    // i will add a methode that give 2 attack types
+                    BasicAttacks();
+                    Debug.Log("Boss is Attacking!");
                 }
                 break;
             case State.ChargeAttack:
@@ -194,6 +199,9 @@ public class Boss : MonoBehaviour
 
     void HandlingSounds()
     {
+        if (currentState == State.normalAttack || currentState == State.ChargeAttack)
+            return;
+
         switch (currentState)
         {
             case State.Roaming:
@@ -215,24 +223,7 @@ public class Boss : MonoBehaviour
                     AudioSource.Play();
                 }
                 break;
-            /*
-                    case State.normalAttack:
-                        if (!AudioSource.isPlaying || AudioSource.clip != attackSound)
-                        {
-                            AudioSource.clip = attackSound;
-                            AudioSource.loop = false;
-                            AudioSource.Play();
-                        }
-                        break;
-                    case State.ChargeAttack:
-                        if (!AudioSource.isPlaying || AudioSource.clip != chargeAttackSound)
-                        {
-                            AudioSource.clip = chargeAttackSound;
-                            AudioSource.loop = false;
-                            AudioSource.Play();
-                        }
-                        break;
-        */
+
             default:
                 if (AudioSource.isPlaying)
                 {
@@ -242,7 +233,45 @@ public class Boss : MonoBehaviour
                 break;
         }
     }
-    
+
+    void BasicAttacks()
+    {
+        int attackType = Random.Range(0, 3); // Randomly choose between two attack types (0 or 1 or 2)
+        switch (attackType)
+        {
+            case 0:
+                Animator.SetTrigger("attack_1");
+                PlayAttackSound(attackSound1);
+                Invoke(nameof(EndAttack), 2.56f);
+                Debug.Log("Performing Attack Type 1");
+                break;
+            case 1:
+                Animator.SetTrigger("attack_2");
+                PlayAttackSound(attackSound2);
+                Invoke(nameof(EndAttack), 2f);
+                Debug.Log("Performing Attack Type 2");
+                break;
+            case 2:
+                Animator.SetTrigger("attack_3");
+                PlayAttackSound(attackSound3);
+                Invoke(nameof(EndAttack), 3.8f);
+                Debug.Log("Performing Attack Type 3");
+                break;
+        }
+    }
+
+    void PlayAttackSound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            AudioSource.Stop(); // Stop any current sound
+            AudioSource.clip = clip;
+            AudioSource.loop = false;
+            AudioSource.volume = 1f;
+            AudioSource.Play();
+        }
+    }
+
 
     public void FreezeMovement()
     {

@@ -2,7 +2,7 @@
 - Project name: My project
 - Unity version: Unity 6000.1.5f1
 - Active game object:
-  - Name: EnemyAi
+  - Name: FX_DirtSplatter
   - Tag: Untagged
-  - Layer: EnemyXObstacle
+  - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

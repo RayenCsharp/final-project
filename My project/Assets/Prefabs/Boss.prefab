@@ -439,7 +439,7 @@ GameObject:
   - component: {fileID: 3010237092570152684}
   - component: {fileID: 2675231139446234218}
   - component: {fileID: 9089278763560858711}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Boss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -553,7 +553,11 @@ MonoBehaviour:
   obstacleDetectionZone: {fileID: 5278439006263666856}
   targetingZone: {fileID: 8100905191656986048}
   attackDetectionZone: {fileID: 2281353150211610716}
-  walkingSound: {fileID: 8300000, guid: 7f28191a45a6d4b46af1210e751c7bd5, type: 3}
+  walkingSound: {fileID: 8300000, guid: 82ca0caf60f096f48805a335cb00ead9, type: 3}
+  runningSound: {fileID: 8300000, guid: 0e9197c86d01f4c458a272dea578f253, type: 3}
+  attackSound1: {fileID: 8300000, guid: c3fef9e434f2e8a47a326d7eba6e0c93, type: 3}
+  attackSound2: {fileID: 8300000, guid: d79f696e4d0546c40a670aa1786a698e, type: 3}
+  attackSound3: {fileID: 8300000, guid: 8bb8cbd802c4e8145b63d991a7c5e7a3, type: 3}
 --- !u!82 &9089278763560858711
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1320,8 +1324,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 15
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 8
+  m_Center: {x: -0.01776123, y: 0, z: 0}
 --- !u!114 &2281353150211610716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1501,7 +1505,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectionLayer:
     serializedVersion: 2
-    m_Bits: 1216
+    m_Bits: 64
   detectedColliders: []
 --- !u!1 &4323535810434600854
 GameObject:

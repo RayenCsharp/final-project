@@ -34,8 +34,9 @@ public class Boss : MonoBehaviour
 
     private Animator Animator;
     private AudioSource AudioSource;
+    private Damageble Damageble; // Reference to the Damageble component
 
-    
+
     [SerializeField]private AudioClip walkingSound;
     [SerializeField]private AudioClip runningSound;
 
@@ -55,6 +56,7 @@ public class Boss : MonoBehaviour
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component
         Animator = GetComponent<Animator>();
         AudioSource = GetComponent<AudioSource>();
+        Damageble = GetComponent<Damageble>(); // Get the Damageble component
         startingPosition = transform.position; // Set the starting position to the enemy's current position
         SetNewRoamingPosition(); // Set the initial roaming position
     }
@@ -64,6 +66,8 @@ public class Boss : MonoBehaviour
     {
         DetermineState();
         HandlingSounds();
+        
+        if (!Damageble.IsAlive) return; // If the enemy is not alive, do not update
 
         Animator.SetBool("isMoving", currentState == State.Chasing || currentState == State.Roaming);
         Animator.SetBool("isChasing", currentState == State.Chasing);
@@ -99,6 +103,7 @@ public class Boss : MonoBehaviour
             case State.Chasing:
                 if (targetingZone.detectedColliders.Count > 0)
                 {
+                    enemystoped = false;
                     Transform target = targetingZone.detectedColliders[0].transform;
                     chasingPostion = (target.position - transform.position).normalized;
                 }
@@ -126,7 +131,7 @@ public class Boss : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (enemystoped) return;
+        if (enemystoped || !Damageble.IsAlive) return;
         if (currentState == State.Roaming)
         {
             Vector3 direction = roamingPostion - transform.position;
@@ -199,9 +204,13 @@ public class Boss : MonoBehaviour
 
     void HandlingSounds()
     {
+        if (!Damageble.IsAlive)
+        {
+            if (AudioSource.isPlaying) AudioSource.Stop(); return;
+        }
+
         if (currentState == State.normalAttack || currentState == State.ChargeAttack)
             return;
-
         switch (currentState)
         {
             case State.Roaming:

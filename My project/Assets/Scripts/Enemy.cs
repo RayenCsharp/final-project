@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour
         idle, // Enemy is idle
         Roaming, // Enemy is roaming
         Chasing, // Enemy is chasing the player
-        attacking // Enemy is attacking the player
+        attacking, // Enemy is attacking the player
     }
     [SerializeField]private State currentState; // Current state of the enemy
 
@@ -30,12 +30,13 @@ public class Enemy : MonoBehaviour
     public DetectionZone targetingZone; // Reference to the detection zone for targeting
     public DetectionZone attackDetectionZone; // Reference to the detection zone for attack detection
 
-    private Animator Animator;
+    public Animator Animator;
     private AudioSource AudioSource;
 
     [SerializeField]private AudioClip walkingSound;
     [SerializeField]private AudioClip runningSound;
-    [SerializeField]private AudioClip swordSwingSound;
+
+    private Damageble Damageble;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -45,6 +46,7 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component
         Animator = GetComponent<Animator>();
         AudioSource = GetComponent<AudioSource>();
+        Damageble = GetComponent<Damageble>(); // Get the Damageble component
         startingPosition = transform.position; // Set the starting position to the enemy's current position
         SetNewRoamingPosition(); // Set the initial roaming position
     }
@@ -52,8 +54,9 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DetermineState();
         HandlingSounds();
+        if (!Damageble.IsAlive) return; // If the enemy is not alive, do not update
+        DetermineState();
 
         Animator.SetBool("isMoving", currentState == State.Chasing || currentState == State.Roaming);
         Animator.SetBool("isChasing", currentState == State.Chasing);
@@ -88,6 +91,7 @@ public class Enemy : MonoBehaviour
             case State.Chasing:
                 if (targetingZone.detectedColliders.Count > 0)
                 {
+                    enemystoped = false; // Enemy is not stopped when chasing
                     Transform target = targetingZone.detectedColliders[0].transform;
                     chasingPostion = (target.position - transform.position).normalized;
                 }
@@ -111,6 +115,7 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!Damageble.IsAlive) return; // If the enemy is not alive, do not update
         if (enemystoped) return;
         if (!enemystoped && currentState == State.Roaming) // Check if the enemy is not stopped
         {
@@ -146,6 +151,12 @@ public class Enemy : MonoBehaviour
         enemystoped = true;
         waitTime = newWaitTime;
         waitTimer = 0f;
+    }
+
+    public void KnockBack(Vector3 knockback)
+    {
+        rb.AddForce(knockback, ForceMode.Impulse); // Apply knockback force to the enemy
+        Debug.Log("Enemy Knocked Back: " + knockback);
     }
 
     private void DetermineState()
@@ -194,13 +205,12 @@ public class Enemy : MonoBehaviour
                     AudioSource.Play();
                 }
                 break;
-            case State.attacking:
-                if (!AudioSource.isPlaying || AudioSource.clip != swordSwingSound)
+            case State.idle:
+                if (AudioSource.isPlaying)
                 {
-                    AudioSource.clip = swordSwingSound;
-                    AudioSource.loop = false;
-                    AudioSource.Play();
-                }
+                    AudioSource.Stop();
+                    AudioSource.clip = null;
+                } 
                 break;
             default:
                 if (AudioSource.isPlaying)

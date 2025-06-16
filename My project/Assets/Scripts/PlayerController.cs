@@ -69,8 +69,6 @@ public class PlayerController : MonoBehaviour
         if (movement.sqrMagnitude > 0.01f)
         {
             rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
-
-            // Smooth rotation
             Quaternion targetRotation = Quaternion.LookRotation(movement);
             Quaternion smoothRotation = Quaternion.Slerp(rb.rotation, targetRotation, 10f * Time.fixedDeltaTime);
             rb.MoveRotation(smoothRotation);
@@ -105,7 +103,6 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-            Debug.Log("Player is grounded");
         }
     }
 

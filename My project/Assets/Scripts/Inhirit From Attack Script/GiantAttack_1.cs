@@ -5,6 +5,19 @@ public class GiantAttack_1 : Attack
     [SerializeField] private LayerMask targetLayers;
     [SerializeField] private int damage = 30;
     [SerializeField] private float KnockbackForce = 15f;
+    [SerializeField] private GameObject hitEffectPrefab;
+    [SerializeField] private Transform spawnPos;
+
+
+
+    public void SpawnHitEffect()
+    {
+        if (hitEffectPrefab != null)
+        {
+            Debug.Log("Spawning hit effect");
+            Instantiate(hitEffectPrefab, spawnPos);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {

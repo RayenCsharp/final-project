@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 5292777565947891159}
   - component: {fileID: 5999662785672279866}
   m_Layer: 0
-  m_Name: 2Handed
+  m_Name: player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

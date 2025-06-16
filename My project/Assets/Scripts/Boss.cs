@@ -114,7 +114,6 @@ public class Boss : MonoBehaviour
                 {
                     isAttacking = true;
                     BasicAttacks();
-                    Debug.Log("Boss is Attacking!");
                 }
                 break;
             case State.ChargeAttack:
@@ -139,10 +138,10 @@ public class Boss : MonoBehaviour
 
             float distance = direction.magnitude;
 
-            if (distance < 0.5f) // ✅ Increase threshold for stopping
+            if (distance < 0.5f)
             {
                 StartWaiting(1f);
-                rb.linearVelocity = Vector3.zero; // Updated to use linearVelocity
+                rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
                 return;
             }
@@ -153,9 +152,9 @@ public class Boss : MonoBehaviour
             Quaternion lookRotation = Quaternion.LookRotation(direction);
             rb.MoveRotation(Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * walkingSpeed));
         }
-        else if (currentState == State.Chasing) // Check if the enemy is in the Chasing state and there are detected colliders in the targeting zone
+        else if (currentState == State.Chasing)
         {
-            rb.MovePosition(transform.position + chasingPostion * runningSpeed * Time.fixedDeltaTime); // Move the enemy towards the target
+            rb.MovePosition(transform.position + chasingPostion * runningSpeed * Time.fixedDeltaTime);
             if (chasingPostion.sqrMagnitude > 0.001f)
             {
                 Quaternion lookRotation = Quaternion.LookRotation(chasingPostion);
@@ -166,8 +165,8 @@ public class Boss : MonoBehaviour
 
     void SetNewRoamingPosition()
     {
-        Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized; // Generate a random direction
-        roamingPostion = startingPosition + randomDirection * Random.Range(20f, roamingRange); // Set the new roaming position based on the random direction and range
+        Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized;
+        roamingPostion = startingPosition + randomDirection * Random.Range(20f, roamingRange);
     }
 
     void StartWaiting(float newWaitTime)
@@ -252,19 +251,16 @@ public class Boss : MonoBehaviour
                 Animator.SetTrigger("attack_1");
                 PlayAttackSound(attackSound1);
                 Invoke(nameof(EndAttack), 2.56f);
-                Debug.Log("Performing Attack Type 1");
                 break;
             case 1:
                 Animator.SetTrigger("attack_2");
                 PlayAttackSound(attackSound2);
                 Invoke(nameof(EndAttack), 2f);
-                Debug.Log("Performing Attack Type 2");
                 break;
             case 2:
                 Animator.SetTrigger("attack_3");
                 PlayAttackSound(attackSound3);
                 Invoke(nameof(EndAttack), 3.8f);
-                Debug.Log("Performing Attack Type 3");
                 break;
         }
     }

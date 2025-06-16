@@ -41,7 +41,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5622292067552232864}
-  m_Layer: 11
+  - component: {fileID: 1235029616355246889}
+  - component: {fileID: 2216367042943376339}
+  m_Layer: 0
   m_Name: Attack_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,12 +59,50 @@ Transform:
   m_GameObject: {fileID: 100990844238526694}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: 0, z: 0.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1071218339575595281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1235029616355246889
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100990844238526694}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 0.7121693, y: 2.4397848, z: 1.6385319}
+  m_Center: {x: 0.19460668, y: 0.7198919, z: -0.3192661}
+--- !u!114 &2216367042943376339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100990844238526694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b53f429d3511c364db35e7869b99b03c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  damage: 50
+  KnockbackForce: 15
 --- !u!1 &196680884709387919
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,7 +1037,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1071218339575595281}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: AttackZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1063,7 +1103,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 455311395200950175}
-  m_Layer: 11
+  - component: {fileID: 8704344484044669745}
+  - component: {fileID: 451642118216050135}
+  m_Layer: 0
   m_Name: Attack_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1079,12 +1121,50 @@ Transform:
   m_GameObject: {fileID: 2693771028386291215}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.365, y: 0.301, z: 1.048}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1071218339575595281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8704344484044669745
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2693771028386291215}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 3.401479, y: 0.1662834, z: 3.3482919}
+  m_Center: {x: 0.27743456, y: -0.2742322, z: -0.31299934}
+--- !u!114 &451642118216050135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2693771028386291215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d335382729150304a8db43b0224db59a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  damage: 30
+  KnockbackForce: 15
 --- !u!1 &2836182420736066898
 GameObject:
   m_ObjectHideFlags: 0
@@ -1913,7 +1993,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5797288610509773677}
-  m_Layer: 11
+  - component: {fileID: 1836357783656501561}
+  - component: {fileID: 870193601681601008}
+  m_Layer: 0
   m_Name: Attack_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1929,12 +2011,50 @@ Transform:
   m_GameObject: {fileID: 5942069177264741007}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.17, y: 0, z: 1.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1071218339575595281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1836357783656501561
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5942069177264741007}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Radius: 0.7099621
+  m_Center: {x: 0.026721573, y: -0.01777711, z: 0}
+--- !u!114 &870193601681601008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5942069177264741007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20f72541ddbe3e04f8c389c734f6f521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  damage: 90
+  KnockbackForce: 10
 --- !u!1 &5952162260413060011
 GameObject:
   m_ObjectHideFlags: 0

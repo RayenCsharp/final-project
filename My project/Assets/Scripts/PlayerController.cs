@@ -88,12 +88,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void GotKnockbacked (Vector3 knockbackForce)
-    {
-        rb.AddForce(knockbackForce, ForceMode.Impulse);
-        Debug.Log("Player Knocked Back: " + knockbackForce);
-    }
-
     void AttackManeger()
     {
         if (Input.GetMouseButtonDown(0))

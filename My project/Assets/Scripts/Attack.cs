@@ -21,8 +21,13 @@ public abstract class Attack : MonoBehaviour
         }
     }
 
-    protected void ApplyKnockback(Collider target, float knockBackForce)
+    protected void ApplyKnockback(Collider target, Vector3 knockBackForce)
     {
+        Rigidbody rb = target.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.AddForce(knockBackForce, ForceMode.Impulse);
+        }
 
     }
 }

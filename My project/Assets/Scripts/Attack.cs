@@ -12,7 +12,7 @@ public abstract class Attack : MonoBehaviour
         }
         else if (target.CompareTag("Player"))
         {
-            Damageble damageble = target.GetComponentInChildren<Damageble>();
+            Damageble damageble = target.GetComponent<Damageble>();
             if (damageble == null)
             {
                 Debug.LogWarning("Player Damageble component not found!"); return;
@@ -23,7 +23,7 @@ public abstract class Attack : MonoBehaviour
 
     protected void ApplyKnockback(Collider target, Vector3 knockBackForce)
     {
-        Rigidbody rb = target.GetComponent<Rigidbody>();
+        Rigidbody rb = target.GetComponentInParent<Rigidbody>();
         if (rb != null)
         {
             rb.AddForce(knockBackForce, ForceMode.Impulse);

@@ -7,6 +7,21 @@ public class GiantAttack_1 : Attack
     [SerializeField] private float KnockbackForce = 15f;
     [SerializeField] private GameObject hitEffectPrefab;
     [SerializeField] private Transform spawnPos;
+    [SerializeField]private Damageble Damageble;
+
+    void Start()
+    {
+        Damageble = GetComponentInParent<Damageble>();
+    }
+
+    void Update()
+    {
+        if (Damageble.CurrentHealth == (Damageble.MaxHealth / 2))
+        {
+            Debug.Log("Giant is at half health, increasing damage of attack 1");
+            damage = 45;
+        }
+    }
 
 
 

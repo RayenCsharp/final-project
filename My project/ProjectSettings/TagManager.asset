@@ -17,10 +17,10 @@ TagManager:
   - Obstacle
   - EnemyXObstacle
   - Player
-  - TargetingZoneEnemy
+  - 
   - Enemy
   - Boss
-  - 
+  - PlayerHitBox
   - 
   - 
   - 

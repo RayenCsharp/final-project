@@ -7,6 +7,21 @@ public class GaintAttack_3 : Attack
     [SerializeField] private float KnockbackForce = 10f;
     [SerializeField] private GameObject hitEffectPrefab;
     [SerializeField] private Transform spawnPos;
+    [SerializeField] private Damageble Damageble;
+
+    void Start()
+    {
+        Damageble = GetComponentInParent<Damageble>();
+    }
+
+    void Update()
+    {
+        if (Damageble.CurrentHealth == (Damageble.MaxHealth / 2))
+        {
+            Debug.Log("Giant is at half health, increasing damage of attack 3");
+            damage = 150;
+        }
+    }
 
 
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static Unity.Cinemachine.CinemachineTargetGroup;
 using static UnityEngine.GraphicsBuffer;
 
 public class Boss : MonoBehaviour
@@ -21,16 +22,20 @@ public class Boss : MonoBehaviour
     private Vector3 startingPosition; // Starting position of the enemy
     private Vector3 roamingPostion; // Roaming position of the enemy
     private Vector3 chasingPostion; // Chasing position of the enemy
+    private Vector3 chargeDirection; // Position for charge attack
+    private Vector3 chargePostion; // Target for charge attack
 
     private float roamingRange = 30f; // Range within which the enemy can roam
     private float waitTime;
     private float waitTimer;
     [SerializeField] private bool enemystoped; // Flag to check if the enemy is roaming
     private bool isAttacking = false;
+    private bool hasChargeTarget = false;
 
-    public DetectionZone obstacleDetectionZone; // Reference to the detection zone for obstacles
-    public DetectionZone targetingZone; // Reference to the detection zone for targeting
-    public DetectionZone attackDetectionZone; // Reference to the detection zone for attack detection
+    [SerializeField]private DetectionZone obstacleDetectionZone; // Reference to the detection zone for obstacles
+    [SerializeField]private DetectionZone targetingZone; // Reference to the detection zone for targeting
+    [SerializeField]private DetectionZone attackDetectionZone; // Reference to the detection zone for attack detection
+    [SerializeField]private DetectionZone chargeAttackDetectionZone; // Reference to the detection zone for charge attack detection
 
     private Animator Animator;
     private AudioSource AudioSource;
@@ -44,10 +49,13 @@ public class Boss : MonoBehaviour
     [SerializeField] private AudioClip attackSound2;
     [SerializeField] private AudioClip attackSound3;
 
-    /*
-    [SerializeField]private AudioClip attackSound;
+    private float chargeTimer = 0f;
+    private float maxChargeDuration = 3f;
+    [SerializeField] private Collider chargeHitboxCollider;
+
+
     [SerializeField]private AudioClip chargeAttackSound;
-    */
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -57,6 +65,7 @@ public class Boss : MonoBehaviour
         Animator = GetComponent<Animator>();
         AudioSource = GetComponent<AudioSource>();
         Damageble = GetComponent<Damageble>(); // Get the Damageble component
+
         startingPosition = transform.position; // Set the starting position to the enemy's current position
         SetNewRoamingPosition(); // Set the initial roaming position
     }
@@ -72,6 +81,7 @@ public class Boss : MonoBehaviour
         Animator.SetBool("isMoving", currentState == State.Chasing || currentState == State.Roaming);
         Animator.SetBool("isChasing", currentState == State.Chasing);
         Animator.SetBool("isAttacking", currentState == State.normalAttack);
+        Animator.SetBool("isChargeAttacking", currentState == State.ChargeAttack);
 
         switch (currentState)
         {
@@ -117,10 +127,32 @@ public class Boss : MonoBehaviour
                 }
                 break;
             case State.ChargeAttack:
-                //methode for charge attack
+                if (!hasChargeTarget && targetingZone.detectedColliders.Count > 0)
+                {
+                    enemystoped = false;
+                    Transform target = targetingZone.detectedColliders[0].transform;
+                    chargePostion = target.position;
+                    chargeDirection = (chargePostion - transform.position).normalized;
+                    hasChargeTarget = true;
+                    chargeTimer = 0f;
+
+                    PlayChargeAttackSound();
+                }
                 break;
         }
 
+    }
+
+    void PlayChargeAttackSound()
+    {
+        if (AudioSource.clip != chargeAttackSound)
+        {
+            AudioSource.Stop();
+            AudioSource.clip = chargeAttackSound;
+            AudioSource.loop = true;
+            AudioSource.volume = 1.5f;
+            AudioSource.Play();
+        }
     }
 
     void EndAttack()
@@ -161,6 +193,27 @@ public class Boss : MonoBehaviour
                 rb.MoveRotation(Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * runningSpeed));
             }
         }
+        else if (currentState == State.ChargeAttack)
+        {
+            if (!chargeHitboxCollider.enabled)
+                chargeHitboxCollider.enabled = true;
+
+            chargeTimer += Time.fixedDeltaTime;
+            rb.MovePosition(transform.position + chargeDirection * 15f * Time.fixedDeltaTime);
+            if (chargeDirection.sqrMagnitude > 0.001f)
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(chargeDirection);
+                rb.MoveRotation(Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * 10f));
+            }
+            if (Vector3.Distance(transform.position, chargePostion) < 0.5f || chargeTimer >= maxChargeDuration)
+            {
+                hasChargeTarget = false;
+                chargeDirection = Vector3.zero;
+                chargeHitboxCollider.enabled = false;
+                AudioSource.Stop();
+                StartWaiting(1f);
+            }
+        }
     }
 
     void SetNewRoamingPosition()
@@ -171,6 +224,7 @@ public class Boss : MonoBehaviour
 
     void StartWaiting(float newWaitTime)
     {
+        chargeHitboxCollider.enabled = false;
         currentState = State.idle;
         enemystoped = true;
         waitTime = newWaitTime;
@@ -179,9 +233,13 @@ public class Boss : MonoBehaviour
 
     private void DetermineState()
     {
-        if (isAttacking)
+        if (isAttacking || currentState == State.ChargeAttack)
         {
             return;
+        }
+        else if (Damageble.CurrentHealth <= (Damageble.MaxHealth / 2) && currentState != State.ChargeAttack && chargeAttackDetectionZone.detectedColliders.Count == 0)
+        {
+            currentState = State.ChargeAttack;
         }
         else if (attackDetectionZone.detectedColliders.Count > 0)
         {
@@ -231,6 +289,16 @@ public class Boss : MonoBehaviour
                     AudioSource.Play();
                 }
                 break;
+            //case State.ChargeAttack:
+            //    if (AudioSource.clip != chargeAttackSound)
+            //    {
+            //        AudioSource.Stop();
+            //        AudioSource.clip = chargeAttackSound;
+            //        AudioSource.volume = 1.5f;
+            //        AudioSource.loop = true;
+            //        AudioSource.Play();
+            //    }
+            //    break;
 
             default:
                 if (AudioSource.isPlaying)

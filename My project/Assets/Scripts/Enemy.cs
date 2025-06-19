@@ -121,10 +121,12 @@ public class Enemy : MonoBehaviour
         {
             Vector3 direction = (roamingPostion - transform.position).normalized; // Calculate the direction towards the roaming position
             rb.MovePosition(transform.position + direction * walkingSpeed * Time.fixedDeltaTime); // Move the enemy towards the roaming position
-            if (direction != Vector3.zero) // Check if the direction is not zero to avoid unnecessary rotation
+            Vector3 flatDirection = new Vector3(direction.x, 0f, direction.z); // remove vertical component
+
+            if (flatDirection != Vector3.zero)
             {
-                Quaternion lookRotation = Quaternion.LookRotation(direction); // Calculate the rotation towards the direction
-                rb.MoveRotation(Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * walkingSpeed)); // Smoothly rotate the enemy towards the direction
+                Quaternion lookRotation = Quaternion.LookRotation(flatDirection);
+                rb.MoveRotation(Quaternion.Slerp(transform.rotation, lookRotation, Time.fixedDeltaTime * walkingSpeed));
             }
         }
         else if (currentState == State.Chasing) // Check if the enemy is in the Chasing state and there are detected colliders in the targeting zone

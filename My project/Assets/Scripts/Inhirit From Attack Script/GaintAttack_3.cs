@@ -29,7 +29,6 @@ public class GaintAttack_3 : Attack
     {
         if (hitEffectPrefab != null)
         {
-            Debug.Log("Spawning hit effect");
             Instantiate(hitEffectPrefab, spawnPos);
         }
     }

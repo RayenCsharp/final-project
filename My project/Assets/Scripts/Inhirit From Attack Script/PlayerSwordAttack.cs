@@ -2,8 +2,21 @@ using UnityEngine;
 
 public class PlayerSwordAttack : Attack
 {
-    [SerializeField] private int damage;
+    [SerializeField] private int damage = 35;
     [SerializeField] private LayerMask targetLayers;
+    [SerializeField] private PlayerController playerController;
+
+    private void Update()
+    {
+        if (playerController.currentPowerUp == PowerUpType.DoubleDamage)
+        {
+            damage = 70; // Double the damage if the player has the double damage power-up
+        }
+        else
+        {
+            damage = 35; // Reset to normal damage
+        }
+    }
 
 
     private void OnTriggerEnter(Collider other)

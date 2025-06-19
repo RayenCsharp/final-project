@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -14,20 +16,57 @@ public class PlayerController : MonoBehaviour
     [SerializeField]private float jumpForce = 5f; // Force applied when jumping
 
     public Animator animator; // Reference to the Animator component for animations
-    bool isMoving; // Flag to check if the player is moving
-    bool isRunning; // Flag to check if the player is running
-    bool stopMoving;
+    private bool isMoving; // Flag to check if the player is moving
+    private bool isRunning; // Flag to check if the player is running
+    private bool stopMoving;
+
+    private bool specialAttackActive = true; // Flag to check if special attack is active
+    [SerializeField]private float specialCoolDown = 10f;
+
+    public PowerUpType currentPowerUp = PowerUpType.None;
+    private Coroutine powerupCountdown;
+
+    [SerializeField] private GameObject powerUpObject_1;
+    [SerializeField] private GameObject powerUpObject_2;
+    [SerializeField] private GameObject powerUpObject_3;
+    [SerializeField] private GameObject powerUpObject_4;
+    [SerializeField] private AudioClip powerUpAudio;
+
+    [SerializeField] private Damageble damageble;
+    [SerializeField] private AudioSource audioSource; // Reference to the AudioSource component for playing audio
+    [SerializeField] private Collider playerHitBox; // Reference to the player's hitbox collider
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody2D component attached to the player
         animator = GetComponentInChildren<Animator>();
+        damageble = GetComponentInChildren<Damageble>();
+        audioSource = GetComponent<AudioSource>(); // Get the AudioSource component attached to the player
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (currentPowerUp == PowerUpType.DoubleSpeed)
+        {
+            runningSpeed = 15f; // Increase running speed when double speed power-up is active
+        }
+        else
+        {
+            runningSpeed = 5f; // Reset to normal running speed
+        }
+
+        if (currentPowerUp == PowerUpType.Immunity)
+        {
+            playerHitBox.enabled = false; // Disable hitbox collider when immunity is active
+        }
+        else
+        {
+            playerHitBox.enabled = true; // Enable hitbox collider when immunity is not active
+        }
+
         if (stopMoving)
         {
             return;
@@ -88,14 +127,35 @@ public class PlayerController : MonoBehaviour
 
     void AttackManeger()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftShift))
+        {
+            SpecialAttack();
+        }
+        else if (Input.GetMouseButtonDown(0))
         {
             animator.SetTrigger("Attack_1");
         }
-        else if (Input.GetKeyDown(KeyCode.F))
+        else if (Input.GetMouseButtonDown(1))
         {
             animator.SetTrigger("Attack_2");
         }
+    }
+
+    void SpecialAttack()
+    {
+        if (specialAttackActive)
+        {
+            animator.SetTrigger("Attack_3");
+            specialAttackActive = false; // Disable special attack after use
+            StartCoroutine(ResetSpecialAttack(specialCoolDown)); // Start cooldown coroutine
+        }
+    }
+
+    IEnumerator ResetSpecialAttack (float coolDown)
+    {
+        yield return new WaitForSeconds(coolDown);
+        specialAttackActive = true; // Re-enable special attack after cooldown
+        Debug.Log("Special attack is ready again!");
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -104,6 +164,65 @@ public class PlayerController : MonoBehaviour
         {
             isGrounded = true;
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("PowerUp"))
+        {
+            currentPowerUp = other.gameObject.GetComponent<PowerUp>().powerUpType;
+            audioSource.PlayOneShot(powerUpAudio); // Play power-up sound effect
+            Destroy(other.gameObject);
+            if (currentPowerUp == PowerUpType.Heal)
+            {
+                damageble.CurrentHealth = damageble.MaxHealth;
+                powerUpObject_1.gameObject.SetActive(true);
+                if (powerupCountdown != null)
+                {
+                    StopCoroutine(powerupCountdown);
+                }
+                powerupCountdown = StartCoroutine(PowerupCountdownRoutine(2f , powerUpObject_1));
+                Debug.Log("Healed!");
+            }
+            else if (currentPowerUp == PowerUpType.DoubleDamage)
+            {
+                powerUpObject_2.gameObject.SetActive(true);
+                if (powerupCountdown != null)
+                {
+                    StopCoroutine(powerupCountdown);
+                }
+                powerupCountdown = StartCoroutine(PowerupCountdownRoutine(10f, powerUpObject_2));
+                Debug.Log("Double Damage Activated!");
+            }
+            else if (currentPowerUp == PowerUpType.DoubleSpeed)
+            {
+                powerUpObject_3.gameObject.SetActive(true);
+                if (powerupCountdown != null)
+                {
+                    StopCoroutine(powerupCountdown);
+                }
+                powerupCountdown = StartCoroutine(PowerupCountdownRoutine(10f, powerUpObject_3));
+                Debug.Log("Double Speed Activated!");
+            }
+            else if (currentPowerUp == PowerUpType.Immunity)
+            {
+                powerUpObject_4.gameObject.SetActive(true);
+                if (powerupCountdown != null)
+                {
+                    StopCoroutine(powerupCountdown);
+                }
+                powerupCountdown = StartCoroutine(PowerupCountdownRoutine(5f, powerUpObject_4));
+                Debug.Log("Immunity Activated!");
+            }
+        }
+    }
+
+    IEnumerator PowerupCountdownRoutine(float coolDown, GameObject powerUpObject)
+    {
+        yield return new WaitForSeconds(coolDown);
+        currentPowerUp = PowerUpType.None;
+        powerUpObject.gameObject.SetActive(false);
+        Debug.Log("Power-up expired!");
     }
 
     public void FreezeMovement()

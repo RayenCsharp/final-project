@@ -29,7 +29,6 @@ public class GiantAttack_1 : Attack
     {
         if (hitEffectPrefab != null)
         {
-            Debug.Log("Spawning hit effect");
             Instantiate(hitEffectPrefab, spawnPos);
         }
     }

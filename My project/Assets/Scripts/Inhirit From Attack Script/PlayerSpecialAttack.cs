@@ -25,7 +25,6 @@ public class PlayerSpecialAttack : Attack
     {
         if (hitEffectPrefab != null)
         {
-            Debug.Log("Spawning hit effect at player special attack position.");
             Instantiate(hitEffectPrefab, spawnPos);
         }
     }

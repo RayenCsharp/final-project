@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip powerUpAudio;
 
     [SerializeField] private Damageble damageble;
+    [SerializeField] private UiManeger uiManeger;
+
     [SerializeField] private AudioSource audioSource; // Reference to the AudioSource component for playing audio
     [SerializeField] private Collider playerHitBox; // Reference to the player's hitbox collider
 
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         damageble = GetComponentInChildren<Damageble>();
         audioSource = GetComponent<AudioSource>(); // Get the AudioSource component attached to the player
+        uiManeger.SpecialAttackReady(); // Initialize the UI to show that the special attack is ready
     }
 
     // Update is called once per frame
@@ -147,6 +150,7 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger("Attack_3");
             specialAttackActive = false; // Disable special attack after use
+            uiManeger.SpecialAttackNotReady(); // Update UI to indicate special attack is not ready
             StartCoroutine(ResetSpecialAttack(specialCoolDown)); // Start cooldown coroutine
         }
     }
@@ -155,7 +159,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(coolDown);
         specialAttackActive = true; // Re-enable special attack after cooldown
-        Debug.Log("Special attack is ready again!");
+        uiManeger.SpecialAttackReady(); // Update UI to indicate special attack is ready
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -177,6 +181,7 @@ public class PlayerController : MonoBehaviour
             {
                 damageble.CurrentHealth = damageble.MaxHealth;
                 powerUpObject_1.gameObject.SetActive(true);
+                uiManeger.ShowHeal(); // Show heal icon in UI
                 if (powerupCountdown != null)
                 {
                     StopCoroutine(powerupCountdown);
@@ -187,6 +192,7 @@ public class PlayerController : MonoBehaviour
             else if (currentPowerUp == PowerUpType.DoubleDamage)
             {
                 powerUpObject_2.gameObject.SetActive(true);
+                uiManeger.ActivateDoubleDamage(10f); // Show double damage icon in UI
                 if (powerupCountdown != null)
                 {
                     StopCoroutine(powerupCountdown);
@@ -197,6 +203,7 @@ public class PlayerController : MonoBehaviour
             else if (currentPowerUp == PowerUpType.DoubleSpeed)
             {
                 powerUpObject_3.gameObject.SetActive(true);
+                uiManeger.ActivateSpeed(10f); // Show double speed icon in UI
                 if (powerupCountdown != null)
                 {
                     StopCoroutine(powerupCountdown);
@@ -207,6 +214,7 @@ public class PlayerController : MonoBehaviour
             else if (currentPowerUp == PowerUpType.Immunity)
             {
                 powerUpObject_4.gameObject.SetActive(true);
+                uiManeger.ActivateImmunity(5f); // Show immunity icon in UI
                 if (powerupCountdown != null)
                 {
                     StopCoroutine(powerupCountdown);

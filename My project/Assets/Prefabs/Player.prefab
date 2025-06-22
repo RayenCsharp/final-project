@@ -1159,6 +1159,7 @@ MonoBehaviour:
   powerUpObject_4: {fileID: 6960795268752069055}
   powerUpAudio: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
   damageble: {fileID: 5999662785672279866}
+  uiManeger: {fileID: 0}
   audioSource: {fileID: 2281475634423191453}
   playerHitBox: {fileID: 5809429474028393385}
 --- !u!82 &2281475634423191453
@@ -2344,8 +2345,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.861726, z: 1.1792278}
-  m_Center: {x: 0, y: -0.43086302, z: 0.089613914}
+  m_Size: {x: 1.200933, y: 0.98894393, z: 3.0502014}
+  m_Center: {x: 0, y: -0.2623511, z: 1.0251007}
 --- !u!114 &6668464040025242722
 MonoBehaviour:
   m_ObjectHideFlags: 0

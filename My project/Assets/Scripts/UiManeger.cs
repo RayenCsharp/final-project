@@ -21,11 +21,14 @@ public class UiManeger : MonoBehaviour
     [SerializeField]private GameObject bossHpBar;
     [SerializeField]private Slider hpBar; // Reference to the boss HP text
 
+    [SerializeField]private GameObject gameOverPanel; // Reference to the game over panel
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         playerHpText.text = $"HP: {playerDamageble.CurrentHealth}/{playerDamageble.MaxHealth}"; // Initialize the player HP text
         timerText.text = "00:00"; // Initialize the timer text
+        gameOverPanel.SetActive(false); // Hide the game over panel at the start
     }
 
     // Update is called once per frame
@@ -96,6 +99,11 @@ public class UiManeger : MonoBehaviour
         }
         timerText.text = "";
         icon.enabled = false;
+    }
+
+    public void GameOver()
+    {
+        gameOverPanel.SetActive(true); // Show the game over panel when the game is over
     }
 
     public void SpecialAttackReady()

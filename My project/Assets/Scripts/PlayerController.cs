@@ -52,6 +52,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!damageble.IsAlive)
+        {
+            GameManeger gameManeger = Object.FindFirstObjectByType<GameManeger>();
+            if (gameManeger != null)
+            {
+                gameManeger.Invoke("GameOver", 2f);
+            }
+        }
         if (currentPowerUp == PowerUpType.DoubleSpeed)
         {
             runningSpeed = 15f; // Increase running speed when double speed power-up is active
@@ -74,6 +82,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
         AttackManeger();
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
@@ -181,6 +190,9 @@ public class PlayerController : MonoBehaviour
             {
                 damageble.CurrentHealth = damageble.MaxHealth;
                 powerUpObject_1.gameObject.SetActive(true);
+                powerUpObject_2.gameObject.SetActive(false);
+                powerUpObject_3.gameObject.SetActive(false);
+                powerUpObject_4.gameObject.SetActive(false);
                 uiManeger.ShowHeal(); // Show heal icon in UI
                 if (powerupCountdown != null)
                 {
@@ -192,6 +204,9 @@ public class PlayerController : MonoBehaviour
             else if (currentPowerUp == PowerUpType.DoubleDamage)
             {
                 powerUpObject_2.gameObject.SetActive(true);
+                powerUpObject_1.gameObject.SetActive(false);
+                powerUpObject_3.gameObject.SetActive(false);
+                powerUpObject_4.gameObject.SetActive(false);
                 uiManeger.ActivateDoubleDamage(10f); // Show double damage icon in UI
                 if (powerupCountdown != null)
                 {
@@ -203,6 +218,9 @@ public class PlayerController : MonoBehaviour
             else if (currentPowerUp == PowerUpType.DoubleSpeed)
             {
                 powerUpObject_3.gameObject.SetActive(true);
+                powerUpObject_2.gameObject.SetActive(false);
+                powerUpObject_1.gameObject.SetActive(false);
+                powerUpObject_4.gameObject.SetActive(false);
                 uiManeger.ActivateSpeed(10f); // Show double speed icon in UI
                 if (powerupCountdown != null)
                 {
@@ -214,6 +232,9 @@ public class PlayerController : MonoBehaviour
             else if (currentPowerUp == PowerUpType.Immunity)
             {
                 powerUpObject_4.gameObject.SetActive(true);
+                powerUpObject_2.gameObject.SetActive(false);
+                powerUpObject_3.gameObject.SetActive(false);
+                powerUpObject_1.gameObject.SetActive(false);
                 uiManeger.ActivateImmunity(5f); // Show immunity icon in UI
                 if (powerupCountdown != null)
                 {

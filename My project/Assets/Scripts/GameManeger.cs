@@ -7,6 +7,11 @@ public class GameManeger : MonoBehaviour
     [SerializeField]private float timer = 0f; // Timer to keep track of the game time
     private string TimerText; // Text to display the timer in the UI
 
+    public static float highestScore;
+    private string bestPlayer;
+
+    public static bool bossDefeated;
+
     [SerializeField] private GameObject enemyPrefab; // Prefab for the enemy to be spawned
     [SerializeField] private GameObject bossPrefab;
     [SerializeField] private List<GameObject> powerUpPrefabs; // List of power-up prefabs to be spawned
@@ -21,10 +26,17 @@ public class GameManeger : MonoBehaviour
     private bool bossSpawned;
 
     [SerializeField] private UiManeger uiManeger;
+    [SerializeField] AudioSource music;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (DataHolder.Instance != null)
+        {
+            highestScore = DataHolder.Instance.bestScore;
+            bestPlayer = DataHolder.Instance.bestPlayer;
+            music.volume = DataHolder.Instance.Volume; // Set the music volume from saved data
+        }
         SpawnEnemyWave(waveNumber);
         int randomPowerup = Random.Range(0, powerUpPrefabs.Count);
         Instantiate(powerUpPrefabs[randomPowerup], centerSpawner);
@@ -60,7 +72,12 @@ public class GameManeger : MonoBehaviour
                 Instantiate(powerUpPrefabs[randomPowerup], centerSpawner);
             }
         }
-        
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(0);
+        }
+
     }
 
     public string UpdateTimerText()
@@ -90,11 +107,25 @@ public class GameManeger : MonoBehaviour
         Time.timeScale = 0f; // Stop the game by setting the time scale to zero
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        Results(timer);
+        DataHolder.Instance.Save(); // Save the data when the game is over
         Debug.Log("Game Stopped"); // Log a message indicating the game has stopped
+    }
+
+    void Results(float playerScore)
+    {
+        if ((playerScore < highestScore || highestScore == 0f) && bossDefeated)
+        {
+            highestScore = playerScore;
+            DataHolder.Instance.bestScore = highestScore;
+            bestPlayer = DataHolder.Instance.currentPlayerName;
+            DataHolder.Instance.bestPlayer = bestPlayer;
+        }
     }
 
     public void RestartScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameManeger.bossDefeated = false;
+        SceneManager.LoadScene(0);
     }
 }

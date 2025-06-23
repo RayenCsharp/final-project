@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sound: {fileID: 8300000, guid: 7e72fa2458c08d149811a66d58815d2b, type: 3}
-  volume: 0.25
+  volume: 0.5
   playOnEnter: 1
   playOnExit: 0
   playAfterDelay: 0
@@ -455,7 +455,7 @@ AnimatorStateMachine:
     m_Position: {x: 360, y: -70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3900181583264326586}
-    m_Position: {x: 390, y: -160, z: 0}
+    m_Position: {x: 370, y: -160, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3181358053128156875}
     m_Position: {x: 370, y: 170, z: 0}
@@ -720,6 +720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeTime: 5
+  gameManeger: {fileID: 0}
 --- !u!1101 &6710498974156448200
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

@@ -10,6 +10,7 @@ public class FadeRemoveBehaviour : StateMachineBehaviour
     private Material[] originalMaterials;
     private Color[] originalColors;
 
+    [SerializeField] private GameManeger gameManeger; // Reference to the GameManager to set boss defeated state
     // Called when entering the animation state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -57,6 +58,14 @@ public class FadeRemoveBehaviour : StateMachineBehaviour
 
         if (timeElapsed >= fadeTime)
         {
+            if (animator.CompareTag("Boss")) // Make sure the Animator has the "Boss" tag
+            {
+                GameManeger.bossDefeated = true;
+                gameManeger = Object.FindFirstObjectByType<GameManeger>();
+                gameManeger.GameOver();
+                // or BossTracker.bossDefeated = true;
+            }
+
             Object.Destroy(objToRemove);
         }
     }

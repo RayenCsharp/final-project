@@ -76,6 +76,8 @@ public class GameManeger : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene(0);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
     }
@@ -104,6 +106,7 @@ public class GameManeger : MonoBehaviour
     public void GameOver()
     {
         uiManeger.GameOver();
+        AudioListener.pause = true;
         Time.timeScale = 0f; // Stop the game by setting the time scale to zero
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -126,6 +129,7 @@ public class GameManeger : MonoBehaviour
     public void RestartScene()
     {
         GameManeger.bossDefeated = false;
+        AudioListener.pause = false;
         SceneManager.LoadScene(0);
     }
 }

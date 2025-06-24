@@ -106,6 +106,8 @@ MonoBehaviour:
   playOnEnter: 1
   playOnExit: 0
   playAfterDelay: 0
+  loop: 0
+  stopLoopOnExit: 1
   playDelay: 0.25
 --- !u!1101 &-5335416639807952507
 AnimatorStateTransition:
@@ -249,6 +251,8 @@ MonoBehaviour:
   playOnEnter: 0
   playOnExit: 0
   playAfterDelay: 1
+  loop: 0
+  stopLoopOnExit: 1
   playDelay: 0.25
 --- !u!1107 &-536309766659351404
 AnimatorStateMachine:
@@ -455,7 +459,7 @@ AnimatorStateMachine:
     m_Position: {x: 360, y: -70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3900181583264326586}
-    m_Position: {x: 370, y: -160, z: 0}
+    m_Position: {x: 360, y: -140, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3181358053128156875}
     m_Position: {x: 370, y: 170, z: 0}
@@ -653,6 +657,8 @@ MonoBehaviour:
   playOnEnter: 1
   playOnExit: 0
   playAfterDelay: 0
+  loop: 0
+  stopLoopOnExit: 1
   playDelay: 0.25
 --- !u!1101 &5620293055042037269
 AnimatorStateTransition:

@@ -193,7 +193,7 @@ public class Enemy : MonoBehaviour
                 if (!AudioSource.isPlaying || AudioSource.clip != walkingSound)
                 {
                     AudioSource.clip = walkingSound;
-                    AudioSource.volume = 0.5f;
+                    AudioSource.volume = 1.5f;
                     AudioSource.loop = true;
                     AudioSource.Play();
                 }
@@ -202,7 +202,7 @@ public class Enemy : MonoBehaviour
                 if (!AudioSource.isPlaying || AudioSource.clip != runningSound)
                 {
                     AudioSource.clip = runningSound;
-                    AudioSource.volume = 0.3f;
+                    AudioSource.volume = 1f;
                     AudioSource.loop = true;
                     AudioSource.Play();
                 }

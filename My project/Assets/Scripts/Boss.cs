@@ -136,23 +136,11 @@ public class Boss : MonoBehaviour
                     hasChargeTarget = true;
                     chargeTimer = 0f;
 
-                    PlayChargeAttackSound();
+                    
                 }
                 break;
         }
 
-    }
-
-    void PlayChargeAttackSound()
-    {
-        if (AudioSource.clip != chargeAttackSound)
-        {
-            AudioSource.Stop();
-            AudioSource.clip = chargeAttackSound;
-            AudioSource.loop = true;
-            AudioSource.volume = 1.5f;
-            AudioSource.Play();
-        }
     }
 
     void EndAttack()
@@ -289,16 +277,6 @@ public class Boss : MonoBehaviour
                     AudioSource.Play();
                 }
                 break;
-            //case State.ChargeAttack:
-            //    if (AudioSource.clip != chargeAttackSound)
-            //    {
-            //        AudioSource.Stop();
-            //        AudioSource.clip = chargeAttackSound;
-            //        AudioSource.volume = 1.5f;
-            //        AudioSource.loop = true;
-            //        AudioSource.Play();
-            //    }
-            //    break;
 
             default:
                 if (AudioSource.isPlaying)

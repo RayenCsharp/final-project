@@ -48,10 +48,7 @@ public class Damageble : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!IsAlive)
-        {
-            Debug.Log($"{gameObject.name} has died.");
-        }
+   
     }
 
     public void TakeDamage(int damage)

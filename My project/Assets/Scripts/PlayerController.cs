@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     private float verticalInput; // Input for vertical movement
     public Transform playerCamera; // Reference to the player's camera
     [SerializeField]private bool isGrounded; // Check if the player is grounded
-    [SerializeField]private float jumpForce = 5f; // Force applied when jumping
+    [SerializeField]private float jumpForce = 7f; // Force applied when jumping
 
     public Animator animator; // Reference to the Animator component for animations
     private bool isMoving; // Flag to check if the player is moving
@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     private bool stopMoving;
 
     private bool specialAttackActive = true; // Flag to check if special attack is active
-    [SerializeField]private float specialCoolDown = 10f;
+    [SerializeField]private float specialCoolDown = 15f;
 
     public PowerUpType currentPowerUp = PowerUpType.None;
     private Coroutine powerupCountdown;
@@ -37,6 +37,10 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private AudioSource audioSource; // Reference to the AudioSource component for playing audio
     [SerializeField] private Collider playerHitBox; // Reference to the player's hitbox collider
+    [SerializeField] private float xBoundLeft = -55f;
+    [SerializeField] private float xBoundRight = 40f;
+    [SerializeField] private float zBoundBottom = -78f;
+    [SerializeField] private float zBoundTop = 40f;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -63,6 +67,22 @@ public class PlayerController : MonoBehaviour
         if (currentPowerUp == PowerUpType.DoubleSpeed)
         {
             runningSpeed = 15f; // Increase running speed when double speed power-up is active
+            if (transform.position.x < xBoundLeft)
+            {
+                transform.position = new Vector3(xBoundLeft, transform.position.y, transform.position.z);
+            }
+            if (transform.position.x > xBoundRight)
+            {
+                transform.position = new Vector3(xBoundRight, transform.position.y, transform.position.z);
+            }
+            if (transform.position.z < zBoundBottom)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, zBoundBottom);
+            }
+            if (transform.position.z > zBoundTop)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, zBoundTop);
+            }
         }
         else
         {

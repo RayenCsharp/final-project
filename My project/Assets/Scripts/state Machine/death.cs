@@ -10,7 +10,7 @@ public class FadeRemoveBehaviour : StateMachineBehaviour
     private Material[] originalMaterials;
     private Color[] originalColors;
 
-    [SerializeField] private GameManeger gameManeger; // Reference to the GameManager to set boss defeated state
+    [SerializeField] private GameManeger gameManeger;
     // Called when entering the animation state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -58,25 +58,23 @@ public class FadeRemoveBehaviour : StateMachineBehaviour
 
         if (timeElapsed >= fadeTime)
         {
-            if (animator.CompareTag("Boss")) // Make sure the Animator has the "Boss" tag
+            if (animator.CompareTag("Boss"))
             {
                 GameManeger.bossDefeated = true;
                 gameManeger = Object.FindFirstObjectByType<GameManeger>();
                 gameManeger.GameOver();
-                // or BossTracker.bossDefeated = true;
             }
 
             Object.Destroy(objToRemove);
         }
     }
 
-    // Utility to switch material to transparent mode
     private void SetMaterialTransparent(Material mat)
     {
         mat.SetFloat("_Mode", 2); // Fade mode
         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        mat.SetInt("_ZWrite", 1); // ✅ Enable depth writing
+        mat.SetInt("_ZWrite", 1);
         mat.DisableKeyword("_ALPHATEST_ON");
         mat.EnableKeyword("_ALPHABLEND_ON");
         mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");

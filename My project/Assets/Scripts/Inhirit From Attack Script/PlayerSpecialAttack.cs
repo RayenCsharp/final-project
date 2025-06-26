@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerSpecialAttack : Attack
 {
     [SerializeField] private LayerMask targetLayers;
-    [SerializeField] private int damage = 100;
+    [SerializeField] private int damage = 80;
     [SerializeField] private GameObject hitEffectPrefab;
     [SerializeField] private Transform spawnPos;
     [SerializeField] private PlayerController playerController;
@@ -12,11 +12,11 @@ public class PlayerSpecialAttack : Attack
     {
         if (playerController.currentPowerUp == PowerUpType.DoubleDamage)
         {
-            damage = 200; // Double the damage if the player has the double damage power-up
+            damage = 160; // Double the damage if the player has the double damage power-up
         }
         else
         {
-            damage = 100; // Reset to normal damage
+            damage = 80; // Reset to normal damage
         }
     }
 

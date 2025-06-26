@@ -57,7 +57,7 @@ public class Damageble : MonoBehaviour
         {
             CurrentHealth -= damage;
             Animator.SetTrigger("Hit");
-            Debug.Log($"{gameObject.name} took {damage} damage. Current health: {CurrentHealth}");
+            //Debug.Log($"{gameObject.name} took {damage} damage. Current health: {CurrentHealth}");
         }
     }
 }

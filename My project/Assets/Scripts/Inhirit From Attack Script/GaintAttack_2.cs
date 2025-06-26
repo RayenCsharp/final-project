@@ -16,7 +16,7 @@ public class GaintAttack_2 : Attack
 
     void Update()
     {
-        if (Damageble.CurrentHealth == (Damageble.MaxHealth / 2))
+        if (Damageble.CurrentHealth <= (Damageble.MaxHealth / 2))
         {
             damage = 80;
         }

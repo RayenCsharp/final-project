@@ -17,7 +17,7 @@ public class GameManeger : MonoBehaviour
     [SerializeField] private List<GameObject> powerUpPrefabs; // List of power-up prefabs to be spawned
 
     [SerializeField]private int waveNumber = 1;
-    [SerializeField]private int bossWave = 5;
+    [SerializeField]private int bossWave = 10;
     private int enemiesCount;
     private int powerUpsCount; // Counter for power-ups spawned
 
@@ -26,7 +26,6 @@ public class GameManeger : MonoBehaviour
     private bool bossSpawned;
 
     [SerializeField] private UiManeger uiManeger;
-    [SerializeField] AudioSource music;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,7 +34,6 @@ public class GameManeger : MonoBehaviour
         {
             highestScore = DataHolder.Instance.bestScore;
             bestPlayer = DataHolder.Instance.bestPlayer;
-            music.volume = DataHolder.Instance.Volume; // Set the music volume from saved data
         }
         SpawnEnemyWave(waveNumber);
         int randomPowerup = Random.Range(0, powerUpPrefabs.Count);
@@ -112,7 +110,6 @@ public class GameManeger : MonoBehaviour
         Cursor.visible = true;
         Results(timer);
         DataHolder.Instance.Save(); // Save the data when the game is over
-        Debug.Log("Game Stopped"); // Log a message indicating the game has stopped
     }
 
     void Results(float playerScore)

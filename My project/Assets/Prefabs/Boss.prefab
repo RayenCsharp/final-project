@@ -756,7 +756,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   walkingSpeed: 2.5
-  runningSpeed: 4.5
+  runningSpeed: 5
   enemystoped: 0
   obstacleDetectionZone: {fileID: 5278439006263666856}
   targetingZone: {fileID: 8100905191656986048}
@@ -1429,7 +1429,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   damage: 10
-  KnockbackForce: 15
+  KnockbackForce: 20
 --- !u!1 &2993324657635055254
 GameObject:
   m_ObjectHideFlags: 0

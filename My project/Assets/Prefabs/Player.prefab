@@ -1151,7 +1151,7 @@ MonoBehaviour:
   isGrounded: 0
   jumpForce: 7
   animator: {fileID: 0}
-  specialCoolDown: 5
+  specialCoolDown: 10
   currentPowerUp: 0
   powerUpObject_1: {fileID: 3377166554087492771}
   powerUpObject_2: {fileID: 5933405857213525731}
@@ -1162,6 +1162,10 @@ MonoBehaviour:
   uiManeger: {fileID: 0}
   audioSource: {fileID: 2281475634423191453}
   playerHitBox: {fileID: 5809429474028393385}
+  xBoundLeft: -55
+  xBoundRight: 40
+  zBoundBottom: -78
+  zBoundTop: 40
 --- !u!82 &2281475634423191453
 AudioSource:
   m_ObjectHideFlags: 0

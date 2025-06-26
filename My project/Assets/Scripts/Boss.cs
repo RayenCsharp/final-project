@@ -16,7 +16,7 @@ public class Boss : MonoBehaviour
 
 
     [SerializeField] private float walkingSpeed = 2.5f;
-    [SerializeField] private float runningSpeed = 4.5f;
+    [SerializeField] private float runningSpeed = 5f;
     private Rigidbody rb; // Rigidbody component of the enemy
 
     private Vector3 startingPosition; // Starting position of the enemy
@@ -318,7 +318,7 @@ public class Boss : MonoBehaviour
             AudioSource.Stop(); // Stop any current sound
             AudioSource.clip = clip;
             AudioSource.loop = false;
-            AudioSource.volume = 1f;
+            AudioSource.volume = 1.5f;
             AudioSource.Play();
         }
     }

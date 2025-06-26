@@ -224,12 +224,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    
-
     public void FreezeMovement()
     {
         enemystoped = true;
-        currentState = State.idle; // Set the state to idle when frozen
         rb.linearVelocity = Vector3.zero;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
     }

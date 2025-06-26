@@ -3,7 +3,7 @@ using UnityEngine;
 public class ChargeAttack : Attack
 {
     [SerializeField] private LayerMask targetLayers;
-    [SerializeField] private int damage = 150;
+    [SerializeField] private int damage = 20;
     [SerializeField] private float KnockbackForce = 15f;
     private void OnTriggerEnter(Collider other)
     {

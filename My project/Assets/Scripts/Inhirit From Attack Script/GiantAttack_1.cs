@@ -16,7 +16,7 @@ public class GiantAttack_1 : Attack
 
     void Update()
     {
-        if (Damageble.CurrentHealth == (Damageble.MaxHealth / 2))
+        if (Damageble.CurrentHealth <= (Damageble.MaxHealth / 2))
         {
             Debug.Log("Giant is at half health, increasing damage of attack 1");
             damage = 45;

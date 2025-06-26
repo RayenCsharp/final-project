@@ -2,15 +2,36 @@ using UnityEngine;
 
 public class ControlMusic : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private AudioClip mainMusic;
+    [SerializeField] private AudioClip bossMusic;
+
+    private AudioSource audioSource;
+    private bool bossMusicPlaying = false;
+
     void Start()
     {
-        
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = mainMusic;
+
+        if (DataHolder.Instance != null)
+        {
+            audioSource.volume = DataHolder.Instance.Volume;
+        }
+
+        audioSource.loop = true;
+        audioSource.Play();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        GameObject boss = GameObject.FindGameObjectWithTag("Boss");
+
+        if (boss != null && !bossMusicPlaying)
+        {
+            audioSource.clip = bossMusic;
+            audioSource.Play();
+            bossMusicPlaying = true;
+        }
     }
 }
+
